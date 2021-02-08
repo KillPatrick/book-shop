@@ -30,12 +30,18 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            'date_of_birth' => [
+                'required',
+                'date',
+                'before:13 years ago',
+            ],
         ])->validate();
 
         return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'date_of_birth' => $input['date_of_birth'],
         ]);
     }
 }
