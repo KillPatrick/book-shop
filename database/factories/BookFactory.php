@@ -21,9 +21,12 @@ class BookFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->sentence(rand(1,6));
         return [
-            'title' => $this->faker->sentence(rand(1,6)),
-            'image' => $this->faker->imageUrl(480, 640),
+            'title' => $title,
+            'image' => $this->faker
+                    ->image('public/storage/images',480, 640, null, false, true, $title),
+                  //  ->image('public/storage/images',480, 640, null, false),
             'description' => $this->faker->text(500),
             'is_approved' => 1,
             'created_by' => rand(1, 20),
