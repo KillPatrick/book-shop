@@ -20,8 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call(BookSeeder::class);
         $this->call(RatingSeeder::class);
         $this->call(AuthorSeeder::class);
-        //$this->call(AuthorBookSeeder::class);
+        $this->call(AuthorBookSeeder::class);
         $this->call(GenreSeeder::class);
-        //$this->call(GenreBookSeeder::class);
+        $this->call(GenreBookSeeder::class);
+        $this->call(ReviewSeeder::class);
     }
 }

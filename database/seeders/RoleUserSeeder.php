@@ -20,5 +20,7 @@ class RoleUserSeeder extends Seeder
         User::all()->each(function ($user) use ($role) {
             $user->roles()->attach($role->id);
         });
+
+        User::where('name', 'Admin')->first()->roles()->attach(Role::where('name', 'Admin')->first('id'));
     }
 }

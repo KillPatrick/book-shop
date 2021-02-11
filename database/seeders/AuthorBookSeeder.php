@@ -17,7 +17,7 @@ class AuthorBookSeeder extends Seeder
     {
         Book::all()->each(function ($book)
         {
-            Author::inRandomOrder()->limit(rand(1, 3))->each(function ($author) use ($book)
+            Author::all()->random(rand(1, rand(1, 2)))->each(function ($author) use ($book)
             {
                 $book->authors()->attach($author->id);
             });

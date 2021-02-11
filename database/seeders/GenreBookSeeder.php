@@ -17,7 +17,7 @@ class GenreBookSeeder extends Seeder
     {
         Book::all()->each(function ($book)
         {
-            Genre::inRandomOrder()->limit(rand(1,3))->each(function ($genre) use ($book)
+            Genre::all()->random(rand(1, rand(1, 3)))->each(function ($genre) use ($book)
             {
                 $book->genres()->attach($genre->id);
             });
