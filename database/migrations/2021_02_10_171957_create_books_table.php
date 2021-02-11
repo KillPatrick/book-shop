@@ -19,6 +19,8 @@ class CreateBooksTable extends Migration
             $table->string('image');
             $table->longText('description');
             $table->integer('is_approved');
+            $table->float('price');
+            $table->integer('discount');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });

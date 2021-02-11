@@ -14,7 +14,19 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('book.index', ['books' => Book::paginate(25)]);
+        $books = Book::orderBy('created_at', 'desc')->paginate(25);
+
+        foreach($books as $book){
+            $book->new = false;
+            if((time() - strtotime($book->created_at)) < (7 * 24 * 60 * 60)){
+                $book->new = true;
+            }
+            if($book->discount){
+                $book->price = $book->price * (1 - ($book->discount / 100));
+            }
+        }
+
+        return view('book.index', compact('books'));
     }
 
     /**

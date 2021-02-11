@@ -22,14 +22,18 @@ class BookFactory extends Factory
     public function definition()
     {
         $title = $this->faker->sentence(rand(1,6));
+        $randomDate = date("Y-m-d H:i:s", rand((time() - (10 * 24 * 60 * 60)),time()));
+
         return [
             'title' => $title,
             'image' => $this->faker
                     ->image('public/storage/images',480, 640, null, false, true, $title),
-                  //  ->image('public/storage/images',480, 640, null, false),
             'description' => $this->faker->text(500),
             'is_approved' => 1,
+            'price' => (float)rand(5,30),
+            'discount' => rand(0, rand(0, rand(0, 30))),
             'created_by' => rand(1, 20),
+            'created_at' => $randomDate,
         ];
     }
 }
