@@ -8,13 +8,15 @@
         @foreach ($books as $book)
                     <div class="col mb-2">
                         <div class="card m-2 shadow-sm bg-white rounded-lg">
-                            <h4 class="sticky-top position-absolute mt-2">
+                            <h4 class="sticky-top position-absolute ml-2 mt-2">
                                 <span class="badge badge-secondary">{{$book->price}} &euro;</span>
                                 @if($book->discount)<span class="badge badge-success">-{{$book->discount}}%</span>@endif
                                 @if($book->new)<span class="badge badge-danger">New</span>@endif
                             </h4>
                             <!--h3 class="badge badge-danger sticky-top position-absolute">{{$book->price}} &euro;</h3-->
-                            <img class="card-img-top" src="Storage/Images/{{$book->image}}" title="{{$book->title}}" width="100%" />
+                            <a href="{{route('book.show', $book->id)}}">
+                                <img class="card-img-top" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="100%" />
+                            </a>
                             <div class="card-body p-2 ">
                                 <p class="card-text">
                                     <b>{{$book->title}}</b>
