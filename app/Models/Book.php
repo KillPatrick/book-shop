@@ -9,11 +9,6 @@ class Book extends Model
 {
     use HasFactory;
 
-    public function ratings()
-    {
-        return $this->hasMany('App\Models\Rating');
-    }
-
     public function authors()
     {
         return $this->belongsToMany('App\Models\Author');
@@ -23,4 +18,26 @@ class Book extends Model
     {
         return $this->belongsToMany('App\Models\Genre');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany('App\Models\Review');
+    }
+
+    public function new()
+    {
+        $new = false;
+        if((time() - strtotime($this->created_at)) < (7 * 24 * 60 * 60)){
+            $new = true;
+        }
+
+        return $new;
+    }
+
+    public function discountedPrice()
+    {
+        $discountedPrice = $this->price * (1 - ($this->discount / 100));
+        return $discountedPrice;
+    }
+
 }

@@ -15,13 +15,18 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\BookController::class, 'index']);
 
-Route::view('home', 'home')->middleware('auth');
-Route::resource('user', UserController::class)->middleware('auth');
-Route::resource('book', BookController::class)->middleware('auth');
+//Route::view('home', 'home')->middleware('auth');
+Route::group(['middleware' => 'auth'], function(){
+    Route::resource('user', UserController::class);
+    Route::resource('book', BookController::class, ['except', ['index', 'show']]);
+});
+Route::resource('book', BookController::class, ['only', ['index', 'show']]);
+
+
+
+
 
 
 

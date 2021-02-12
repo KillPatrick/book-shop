@@ -23,7 +23,8 @@ class ReviewFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
-            'review' => $this->faker->sentence(),
+            'review' => $this->faker->paragraph($nbSentences = rand(3, 15), $variableNbSentences = true),
+            'rating' => rand(rand(1, 5), rand(7, 10)),
             'user_id' => rand(1, 20),
             'book_id' => rand(1, 50),
         ];
