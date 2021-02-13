@@ -13,7 +13,7 @@
                             <span class="badge badge-secondary shadow-sm">{{$book->price}} &euro;</span>
                         @endif
                         @if($book->new())
-                            <span class="badge badge-danger shadow-sm">New</span>
+                            <span class="badge badge-warning shadow-sm">New</span>
                         @endif
                     </h4>
                     <img class="card-img-top pt-5 pl-5 pr-5 w-100" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" />
@@ -35,7 +35,7 @@
                             @endforelse
 
                             @can('is-admin')
-                                    <a class="btn btn-primary"href="{{route('book.edit', $book)}}">Edit</a>
+                                    <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
                             @endcan
                     </div>
                 </div>

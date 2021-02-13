@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class BookController extends Controller
 {
@@ -14,7 +15,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::orderBy('created_at', 'desc')->paginate(25);
+        $books = Book::orderBy('created_at', 'desc')
+                    ->paginate(25);
 
         return view('book.index', compact('books'));
     }

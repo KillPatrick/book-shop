@@ -31,9 +31,15 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                   Book-shop
-                </a>
+            @guest
+                    <a class="navbar-brand" href="{{url('/')}}">Book-shop</a>
+            @else
+                @can('is-admin')
+                    <a class="navbar-brand" href="{{route('admin.books.index')}}">Book-shop</a>
+                @else
+                    <a class="navbar-brand" href="{{route('user.books.index')}}">Book-shop</a>
+                @endcan
+            @endguest
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -65,7 +71,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{route('user.index')}}" >
+                                    <a class="dropdown-item" href="{{route('user.users.index')}}" >
                                         {{ __('Profile') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"

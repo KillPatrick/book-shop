@@ -15,14 +15,29 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\BookController::class, 'index']);
+Route::get('/', [App\Http\Controllers\User\BookController::class, 'index']);
 
-//Route::view('home', 'home')->middleware('auth');
+
 Route::group(['middleware' => 'auth'], function(){
-    Route::resource('user', UserController::class);
-    Route::resource('book', BookController::class, ['except', ['index', 'show']]);
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function(){
+        Route::put('user/profile-information', [ProfileInformationController::class, 'update'])
+            ->name('user-profile-information.update');
+        Route::put('user/password', [PasswordController::class, 'update'])
+            ->name('user-password.update');
+        Route::resource('users', User\UserController::class);
+        Route::resource('books', User\BookController::class, ['except', ['index', 'show']]);
+    });
+    Route::group(['middleware' => 'auth.accessAdmin'], function(){
+        Route::group(['prefix' => 'admin', 'as' => 'admin.'], function(){
+            Route::resource('books', Admin\BookController::class, ['except', ['index', 'show']]);
+        });
+    });
 });
-Route::resource('book', BookController::class, ['only', ['index', 'show']]);
+
+Route::group(['prefix' => 'user', 'as' => 'user.'], function() {
+    Route::resource('books', User\BookController::class, ['only', ['index', 'show']]);
+});
 
 
 
@@ -30,10 +45,5 @@ Route::resource('book', BookController::class, ['only', ['index', 'show']]);
 
 
 
-Route::put('user/profile-information', [ProfileInformationController::class, 'update'])
-    ->middleware('auth')
-    ->name('user-profile-information.update');
-Route::put('user/password', [PasswordController::class, 'update'])
-    ->middleware('auth')
-    ->name('user-password.update');
+
 
