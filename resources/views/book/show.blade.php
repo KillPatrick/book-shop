@@ -33,6 +33,10 @@
                                 @if ($loop->first)<hr />[@endif{{$genre->name}}@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
                             @empty
                             @endforelse
+
+                            @can('is-admin')
+                                    <a class="btn btn-primary"href="{{route('book.edit', $book)}}">Edit</a>
+                            @endcan
                     </div>
                 </div>
             </div>

@@ -24,20 +24,35 @@ class Book extends Model
         return $this->hasMany('App\Models\Review');
     }
 
-    public function new()
+    /**
+     * Returns rounded rating of the book from all the reviews
+     * @return float
+     */
+    public function reviewsRating()
     {
-        $new = false;
-        if((time() - strtotime($this->created_at)) < (7 * 24 * 60 * 60)){
-            $new = true;
-        }
-
-        return $new;
+       return round($this->reviews->sum('rating') / $this->reviews->count());
     }
 
+    /**
+     * Checks if book is new
+     * @return bool
+     */
+    public function new()
+    {
+        if((time() - strtotime($this->created_at)) < (7 * 24 * 60 * 60)){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets discounted price
+     * @return float|int
+     */
     public function discountedPrice()
     {
-        $discountedPrice = $this->price * (1 - ($this->discount / 100));
-        return $discountedPrice;
+        return $this->price * (1 - ($this->discount / 100));
     }
 
 }

@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Review');
     }
+
+    /**
+     * Has user any role
+     * @param $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        return null !== $this->roles()->where('name', $role)->first();
+    }
 }
