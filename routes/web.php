@@ -17,9 +17,9 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 
 Route::get('/', [App\Http\Controllers\User\BookController::class, 'index']);
 
-
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
+
     Route::group(['prefix' => 'user', 'as' => 'user.'], function(){
         Route::put('user/profile-information', [ProfileInformationController::class, 'update'])
             ->name('user-profile-information.update');
@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::resource('users', User\UserController::class);
         Route::resource('books', User\BookController::class, ['except', ['index', 'show']]);
     });
+
     Route::group(['middleware' => 'auth.accessAdmin'], function(){
         Route::group(['prefix' => 'admin', 'as' => 'admin.'], function(){
             Route::resource('books', Admin\BookController::class, ['except', ['index', 'show']]);

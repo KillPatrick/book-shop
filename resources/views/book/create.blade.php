@@ -4,8 +4,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                @if($errors->any())
+                    {!! implode('', $errors->all('<div class="alert alert-danger">:message</div>')) !!}
+                @endif
                 <h4>Add your book</h4>
-
+                    @include('book.form')
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -29,7 +30,8 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        $genres = Genre::all();
+        return view('book.create', compact('genres'));
     }
 
     /**
