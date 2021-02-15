@@ -48,8 +48,12 @@
                 @endforelse
 
                 @forelse($book->genres as $genre)
-                        @if ($loop->first)<hr />[@endif<a href="#">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
-                    @empty
+                    @can('is_admin')
+                        @if ($loop->first)<hr />[@endif<a href="{{route('admin.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
+                    @else
+                        @if ($loop->first)<hr />[@endif<a href="{{route('user.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
+                    @endcan
+                @empty
                 @endforelse
                             </small>
                             </div>

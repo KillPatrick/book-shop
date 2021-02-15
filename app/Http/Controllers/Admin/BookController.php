@@ -16,7 +16,19 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::orderBy('created_at', 'desc')
+        $books = Book::with('authors')
+                    ->with('genres')
+                    ->when(request('search'), function ($query) {
+                        $search = request('search');
+                        $query->where('title', 'LIKE', '%'.$search.'%')
+                            ->orWhere('description', 'LIKE', '%'.$search.'%')
+                            ->orWhereHas('genres', function ($query) use ($search){
+                                $query->where('name', 'LIKE', $search);
+                            })->orWhereHas('authors', function ($query) use ($search) {
+                                $query->where('name', 'LIKE', $search);
+                            });
+                    })
+                    ->latest()
                     ->paginate(25);
 
         return view('book.index', compact('books'));
