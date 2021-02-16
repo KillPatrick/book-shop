@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StoreBookRequest;
-use App\Models\Author;
+use App\Models\Genre;
 use App\Models\Book;
+use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,6 @@ class BookController extends Controller
                     })
                     ->latest()
                     ->paginate(25);
-
         return view('book.index', compact('books'));
     }
 
@@ -54,18 +54,18 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        $book = auth()->user()->books()->create($request->all());
-        $book->genres()->attach($request->input('genres'));
-        $authors = explode(',', $request->input('authors'));
-        foreach($authors as $authorName){
-            $author = Author::updateOrCreate(['name' => $authorName]);
-            $book->authors()->attach($author->id);
-        }
+        $book = Book::createBookWithAuthorsGenres($request->all());
 
         $book->is_approved = 1;
+
+        if($request->hasFile('image')){
+            $book->image = $request->image->store('', ['disk' => 'my_files']);
+        }
+
         $book->save();
 
-        return redirect(route('admin.books.index'));
+        return redirect(route('admin.books.index'))
+            ->with('success', 'Book saved!');
     }
 
     /**
@@ -87,7 +87,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $genres = Genre::all();
+
+        return view('book.edit', compact(['book', 'genres']));
     }
 
     /**
@@ -99,7 +101,25 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $book->title = $request->input('title');
+        $book->description = $request->input('description');
+        $book->price = $request->input('price');
+        $book->discount = $request->input('discount');
+        $book->genres()->sync($request['genres']);
+        $authors = explode(',', $request['authors']);
+
+        foreach($authors as $authorName){
+            $author = Author::updateOrCreate(['name' => $authorName]);
+            $book->authors()->sync($author->id);
+        }
+
+        if($request->hasFile('image')){
+            $book->image = $request->image->store('', ['disk' => 'my_files']);
+        }
+
+        $book->save();
+
+        return redirect(route('admin.books.index'))->with('success', 'Book saved!');
     }
 
     /**

@@ -4,11 +4,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                @if($errors->any())
-                    {!! implode('', $errors->all('<div class="alert alert-danger">:message</div>')) !!}
-                @endif
+            @if($errors->any())
+                {!! implode('', $errors->all('<div class="alert alert-danger">:message</div>')) !!}
+            @endif
                 <h4>Add your book</h4>
-                    @include('book.form')
+            @can('is-admin')
+                <form method="POST" enctype="multipart/form-data" action="{{route('admin.books.store')}}" >
+            @else
+                <form method="POST" enctype="multipart/form-data" action="{{route('user.books.store')}}">
+            @endif
+            @include('book.form')
+                </form>
             </div>
         </div>
     </div>

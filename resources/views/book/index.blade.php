@@ -4,8 +4,11 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                @if(Session::has('success'))
+                    <div class="alert alert-success"> {{ Session::get('success') }}</div>
+                @endif
                 <div class="row">
-        @foreach ($books as $book)
+                @forelse ($books as $book)
                     <div class="col mb-2">
                         <div class="card m-2 shadow-sm bg-white rounded-lg">
                             <h4 class="sticky-top position-absolute ml-2 mt-2">
@@ -46,30 +49,37 @@
                             </div>
                             <div class="card-footer p-2">
                                 <small>
-                @forelse($book->authors as $author)
-                   @if ($loop->first)By @endif{{$author->name}}@if(!$loop->last), @endif
-                @empty
-                @endforelse
+                            @forelse($book->authors as $author)
+                               @if ($loop->first)By @endif{{$author->name}}@if(!$loop->last), @endif
+                            @empty
+                            @endforelse
 
-                @forelse($book->genres as $genre)
-                    @can('is_admin')
-                        @if ($loop->first)<hr />[@endif<a href="{{route('admin.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
-                    @else
-                        @if ($loop->first)<hr />[@endif<a href="{{route('user.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
-                    @endcan
-                @empty
-                @endforelse
-                            </small>
+                        @forelse($book->genres as $genre)
+                            @can('is_admin')
+                                @if ($loop->first)<hr />[@endif<a href="{{route('admin.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
+                            @else
+                                @if ($loop->first)<hr />[@endif<a href="{{route('user.books.index', ['search' => $genre->name])}}">{{$genre->name}}</a>@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
+                            @endcan
+                        @empty
+                        @endforelse
+                                    </small>
+                                    </div>
+                                </div>
                             </div>
+                    @if($loop->last)
+                        @php $bookCount = $books->count(); @endphp
+                        @while($bookCount % 5 != 0)
+                            @php $bookCount++; @endphp
+                            <div class="col"></div>
+                        @endwhile
+                    @endif
+                    @if($loop->iteration % 5 == 0)
                         </div>
-                    </div>
-            @if($loop->iteration % 5 == 0)
-                </div>
-            @endif
-            @if($loop->iteration % 5 == 0)
-                <div class="row">
-            @endif
-        @endforeach
+                        <div class="row">
+                    @endif
+                @empty
+                    <div class="alert alert-info mt-0 m-3 w-100">No books found</div>
+                @endforelse
                 </div>
             </div>
         </div>

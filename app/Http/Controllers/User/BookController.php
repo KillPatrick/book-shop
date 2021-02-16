@@ -32,7 +32,6 @@ class BookController extends Controller
                     ->latest()
                     ->whereNotNull('is_approved')
                     ->paginate(25);
-
         return view('book.index', compact('books'));
     }
 
@@ -44,6 +43,7 @@ class BookController extends Controller
     public function create()
     {
         $genres = Genre::all();
+
         return view('book.create', compact('genres'));
     }
 
@@ -55,17 +55,16 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = auth()->user()->books()->create($request->all());
-        $book->genres()->attach($request->input('genres'));
-        $authors = explode(',', $request->input('authors'));
-        foreach($authors as $authorName){
-            $author = Author::updateOrCreate(['name' => $authorName]);
-            $book->authors()->attach($author->id);
+        $book = Book::createBookWithAuthorsGenres($request->all());
+
+        if($request->hasFile('image')){
+            $book->image = $request->image->store('', ['disk' => 'my_files']);
         }
 
         $book->save();
 
-        return redirect(route('user.books.index'));
+        return redirect(route('user.books.index'))
+                    ->with('success','Book saved, but will only be visible when approved by admin');
     }
 
     /**
@@ -76,6 +75,10 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        if(!$book->is_approved){
+            return redirect('/');
+        }
+
         return view('book.show', compact('book'));
     }
 
@@ -87,7 +90,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $genres = Genre::all();
+
+        return view('book.edit', compact(['book', 'genres']));
     }
 
     /**
@@ -99,7 +104,26 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $book->title = $request->input('title');
+        $book->description = $request->input('description');
+        $book->price = $request->input('price');
+        $book->discount = $request->input('discount');
+        $book->genres()->sync($request['genres']);
+        $book->is_approved = null;
+        $authors = explode(',', $request['authors']);
+
+        foreach($authors as $authorName){
+            $author = Author::updateOrCreate(['name' => $authorName]);
+            $book->authors()->sync($author->id);
+        }
+
+        if($request->hasFile('image')){
+            $book->image = $request->image->store('', ['disk' => 'my_files']);
+        }
+
+        $book->save();
+
+        return redirect(route('admin.books.index'))->with('success', 'Book saved!');
     }
 
     /**

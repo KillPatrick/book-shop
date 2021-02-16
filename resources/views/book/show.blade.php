@@ -16,7 +16,11 @@
                             <span class="badge badge-warning shadow-sm">New</span>
                         @endif
                     </h4>
-                    <img class="card-img-top pt-5 pl-5 pr-5 w-100" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" />
+                    @if($book->image)
+                        <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="100%" />
+                    @else
+                        <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/default_image.png')}}" title="{{$book->title}}" width="100%" />
+                    @endif
                     <div class="card-body p-2 ">
                         <p class="card-text">
                             <hr />
@@ -24,19 +28,21 @@
                         </p>
                     </div>
                     <div class="card-footer p-3">
-                            @forelse($book->authors as $author)
-                                @if ($loop->first)By @endif{{$author->name}}@if(!$loop->last), @endif
-                            @empty
-                            @endforelse
+                    @forelse($book->authors as $author)
+                        @if ($loop->first)By @endif{{$author->name}}@if(!$loop->last), @endif
+                    @empty
+                    @endforelse
 
-                            @forelse($book->genres as $genre)
-                                @if ($loop->first)<hr />[@endif{{$genre->name}}@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
-                            @empty
-                            @endforelse
+                    @forelse($book->genres as $genre)
+                        @if ($loop->first)<hr />[@endif{{$genre->name}}@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
+                    @empty
+                    @endforelse
 
-                            @can('is-admin')
-                                    <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
-                            @endcan
+                    @can('is-admin')
+                        <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
+                    @else
+                        <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
+                    @endcan
                     </div>
                 </div>
             </div>

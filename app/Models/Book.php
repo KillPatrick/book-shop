@@ -72,4 +72,22 @@ class Book extends Model
         return $this->price;
     }
 
+    /**
+     * @param $request
+     * @return Book
+     */
+    static public function createBookWithAuthorsGenres($request)
+    {
+        $book = auth()->user()->books()->create($request);
+        $book->genres()->attach($request['genres']);
+        $authors = explode(',', $request['authors']);
+
+        foreach($authors as $authorName){
+            $author = Author::updateOrCreate(['name' => $authorName]);
+            $book->authors()->attach($author->id);
+        }
+
+        return $book;
+    }
+
 }
