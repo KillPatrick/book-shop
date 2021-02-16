@@ -8,11 +8,11 @@
     @csrf
     <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" name="title" class="form-control" id="title" required>
+        <input type="text" name="title" class="form-control" id="title" value="{{ old('title') }}" required>
     </div>
     <div class="form-group">
         <label for="authors">Authors*</label>
-        <input type="text" name="authors" class="form-control" id="authors" required>
+        <input type="text" name="authors" class="form-control" id="authors" value="{{ old('authors') }}" required>
         <small>*Separate authors by comma</small>
     </div>
     <div class="form-group">
@@ -26,12 +26,16 @@
     </div>
     <div class="form-group">
         <label for="description">Example textarea</label>
-        <textarea class="form-control" name="description" id="description" rows="5" required></textarea>
+        <textarea class="form-control" name="description" id="description" rows="5" value="{{ old('description') }}" required></textarea>
     </div>
     <div class="form-group">
         <label for="price">Price &euro;</label>
-        <input class="form-control" name="price" id="price" rows="5" type="number" min="0.1" step="0.01" required />
+        <input class="form-control" name="price" id="price" rows="5" type="number" min="0.1" step="0.01" value="{{ old('price') }}"  required />
     </div>
+    <!--div class="form-group">
+        <label for="discount">Discount %</label>
+        <input class="form-control" name="discount" id="discount" rows="5" type="number" min="0" max="100" step="5" value="{{ old('discount') }}"  required />
+    </div-->
     <div class="form-group">
         <label for="customFile">Cover image</label>
         <div class="custom-file">

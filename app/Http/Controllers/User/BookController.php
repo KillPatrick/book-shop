@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -54,7 +55,17 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $book = auth()->user()->books()->create($request->all());
+        $book->genres()->attach($request->input('genres'));
+        $authors = explode(',', $request->input('authors'));
+        foreach($authors as $authorName){
+            $author = Author::updateOrCreate(['name' => $authorName]);
+            $book->authors()->attach($author->id);
+        }
+
+        $book->save();
+
+        return redirect(route('user.books.index'));
     }
 
     /**

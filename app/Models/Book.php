@@ -9,6 +9,13 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'discount',
+    ];
+
     public function authors()
     {
         return $this->belongsToMany('App\Models\Author');
@@ -30,7 +37,13 @@ class Book extends Model
      */
     public function reviewsRating()
     {
-       return round($this->reviews->sum('rating') / $this->reviews->count());
+       $reviewsCount = $this->reviews->count();
+
+       if($reviewsCount){
+           return round($this->reviews->sum('rating') / $this->reviews->count());
+       }
+
+       return 0;
     }
 
     /**
@@ -52,7 +65,11 @@ class Book extends Model
      */
     public function discountedPrice()
     {
-        return $this->price * (1 - ($this->discount / 100));
+        if($this->discount){
+            return $this->price * (1 - ($this->discount / 100));
+        }
+
+        return $this->price;
     }
 
 }

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StoreBookRequest;
+use App\Models\Author;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -52,7 +54,18 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        dd('done');
+        $book = auth()->user()->books()->create($request->all());
+        $book->genres()->attach($request->input('genres'));
+        $authors = explode(',', $request->input('authors'));
+        foreach($authors as $authorName){
+            $author = Author::updateOrCreate(['name' => $authorName]);
+            $book->authors()->attach($author->id);
+        }
+
+        $book->is_approved = 1;
+        $book->save();
+
+        return redirect(route('admin.books.index'));
     }
 
     /**

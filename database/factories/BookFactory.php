@@ -32,7 +32,7 @@ class BookFactory extends Factory
             'is_approved' => 1,
             'price' => (float)rand(5,30),
             'discount' => rand(0, rand(0, rand(0, 30))),
-            'created_by' => rand(1, 20),
+            'user_id' => rand(1, 20),
             'created_at' => $randomDate,
         ];
     }

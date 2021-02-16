@@ -20,8 +20,8 @@ class CreateBooksTable extends Migration
             $table->longText('description');
             $table->integer('is_approved')->nullable();
             $table->float('price');
-            $table->integer('discount');
-            $table->unsignedBigInteger('created_by');
+            $table->integer('discount')->default(0);
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }
