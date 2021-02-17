@@ -16,6 +16,16 @@ class Book extends Model
         'discount',
     ];
 
+    public function getPriceAttribute($price)
+    {
+        return $price / 100;
+    }
+
+    public function setPriceAttribute($price)
+    {
+        $this->attributes['price'] = $price * 100;
+    }
+
     public function authors()
     {
         return $this->belongsToMany('App\Models\Author');
