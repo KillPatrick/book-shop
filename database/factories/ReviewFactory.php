@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Review;
+use App\Models\Book;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReviewFactory extends Factory
@@ -21,12 +23,13 @@ class ReviewFactory extends Factory
      */
     public function definition()
     {
+
+
+
         return [
             'title' => $this->faker->sentence(),
             'review' => $this->faker->paragraph($nbSentences = rand(3, 15), $variableNbSentences = true),
             'rating' => rand(rand(1, 5), rand(7, 10)),
-            'user_id' => rand(1, 20),
-            'book_id' => rand(1, 50),
         ];
     }
 }

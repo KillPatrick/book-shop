@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::put('user/password', [PasswordController::class, 'update'])
             ->name('user-password.update');
         Route::resource('users', User\UserController::class);
+        Route::resource('reviews', User\ReviewController::class);
         Route::resource('books', User\BookController::class, ['except', ['index', 'show']]);
     });
 

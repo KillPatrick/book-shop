@@ -9,6 +9,19 @@ class Review extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'title',
+        'review',
+        'rating',
+        'book_id',
+        'user_id',
+    ];
+
     public function book()
     {
         return $this->belongsTo('App\Model\Book');

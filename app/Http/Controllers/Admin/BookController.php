@@ -76,7 +76,12 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return view('book.show', compact('book'));
+        $review = null;
+        if(auth()->user()){
+            $review = auth()->user()->reviews->where('book_id', $book->id)->first();
+        }
+
+        return view('book.show', compact(['book', 'review']));
     }
 
     /**
@@ -99,7 +104,7 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(StoreBookRequest $request, Book $book)
     {
         $book->title = $request->input('title');
         $book->description = $request->input('description');

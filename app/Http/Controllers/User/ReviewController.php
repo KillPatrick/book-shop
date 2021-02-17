@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ReviewController extends Controller
 {
@@ -35,7 +36,9 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        auth()->user()->reviews()->create($request->all());
+
+        return redirect(route('user.books.show', $request->book_id));
     }
 
     /**

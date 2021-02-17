@@ -20,6 +20,7 @@ class CreateReviewsTable extends Migration
             $table->integer('rating');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unique(['book_id', 'user_id']);
             $table->timestamps();
         });
     }

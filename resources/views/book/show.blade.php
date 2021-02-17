@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <h5 class="mb-2">Description:</h5>
+                <h5 class="mb-2">Description</h5>
                 <div class="card shadow-sm bg-white rounded-lg">
                     <div class="card-body p-0">
                         <p class="card-text p-2">
@@ -55,7 +55,42 @@
                         </p>
                     </div>
                 </div>
-                <h5 class="mt-4 mb-2">Users reviews:</h5>
+                @auth
+                <h5 class="mb-2 mt-3">Write a review</h5>
+                <div class="card shadow-sm bg-white rounded-lg">
+                    <div class="card-body p-2">
+                        <form method="POST" action="{{route('user.reviews.store')}}">
+                            @csrf
+                            <input type="hidden" name="book_id" value="{{$book->id}}" />
+                        <div class="form-group">
+                            <label for="rating">Rating</label>
+                            <select name="rating" class="form-control" id="rating" required>
+                        @for ($i = 1; $i <= 10; $i++)
+                                <option value="{{$i}}" @isset($review) @if($review->rating == $i) selected @endif @endisset>
+                                    {{$i}} -
+                                    @for ($j = 10; $j >= 1; $j--)
+                                        @if($i >= $j)
+                                            &#9733;
+                                        @endif
+                                    @endfor
+                                </option>
+                        @endfor
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" class="form-control" id="title" value="@isset($review){{$review->title}}@else{{ old('title') }}@endisset" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="review">Review</label>
+                            <textarea class="form-control" name="review" id="review" rows="5" required>@isset($review){{$review->review}}@else{{ old('description') }}@endisset</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                @endauth
+                <h5 class="mt-4 mb-2">Users reviews</h5>
             @forelse ($book->reviews as $review)
                 <div class="card shadow-sm bg-white rounded-lg mb-3">
                     <div class="card-body p-0">
@@ -78,13 +113,13 @@
                     </div>
                 </div>
             @empty
-                <div class="card shadow-sm bg-white rounded-lg">
+                <!--div class="card shadow-sm bg-white rounded-lg">
                     <div class="card-body p-0">
                         <p class="card-text p-2">
                             This book has no reviews :(
                         </p>
                     </div>
-                </div>
+                </div-->
             @endforelse
             </div>
         </div>

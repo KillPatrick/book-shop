@@ -26,8 +26,7 @@ class BookFactory extends Factory
 
         return [
             'title' => $title,
-            'image' => $this->faker
-                    ->image('public/storage/images',480, 640, null, false, true, $title),
+            'image' => $this->faker->image('public/storage/images',480, 640, null, false, true, $title),
             'description' => $this->faker->text(500),
             'is_approved' => 1,
             'price' => (float)rand(5,30),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Requests\StoreBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Author;
@@ -53,7 +54,7 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBookRequest $request)
     {
         $book = Book::createBookWithAuthorsGenres($request->all());
 
@@ -79,7 +80,12 @@ class BookController extends Controller
             return redirect('/');
         }
 
-        return view('book.show', compact('book'));
+        $review = null;
+        if(auth()->user()){
+            $review = auth()->user()->reviews->where('book_id', $book->id)->first();
+        }
+
+        return view('book.show', compact(['book', 'review']));
     }
 
     /**
@@ -102,7 +108,7 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(StoreBookRequest $request, Book $book)
     {
         $book->title = $request->input('title');
         $book->description = $request->input('description');
