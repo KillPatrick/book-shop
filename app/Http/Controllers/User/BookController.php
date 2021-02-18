@@ -20,6 +20,7 @@ class BookController extends Controller
     {
         $books = Book::with('authors')
                     ->with('genres')
+                    ->withAvg('reviews', 'rating')
                     ->when(request('search'), function ($query) {
                         $search = request('search');
                         $query->where('title', 'LIKE', '%'.$search.'%')

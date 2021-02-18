@@ -36,13 +36,13 @@
                             <div class="card-body p-2">
                                 <p class="card-text">
                                     <hr />
-                            @for($i = 1; $i <= 10; $i++)
-                                @if($i <= $book->reviewsRating())
-                                    <span class="text-warning rating-star">&#9733;</span>
-                                @else
-                                    <span class="rating-star">&#9733;</span>
-                                @endif
-                            @endfor
+                                @for($i = 1; $i <= 10; $i++)
+                                    @if($i <= $book->reviews_avg_rating)
+                                        <span class="text-warning rating-star">&#9733;</span>
+                                    @else
+                                        <span class="rating-star">&#9733;</span>
+                                    @endif
+                                @endfor
                                     <hr />
                                     <b>{{$book->title}}</b>
                                 </p>

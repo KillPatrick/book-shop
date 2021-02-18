@@ -11,7 +11,7 @@
             @can('is-admin')
                 <form method="POST" enctype="multipart/form-data" action="{{route('admin.books.update', $book->id)}}" >
             @else
-                <form method="POST" enctype="multipart/form-data" action="{{route('user.books.store', $book->id)}}">
+                <form method="POST" enctype="multipart/form-data" action="{{route('user.books.update', $book->id)}}">
             @endif
             {{ method_field('PUT') }}
             @include('book.form', $book)

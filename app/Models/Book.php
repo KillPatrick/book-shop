@@ -41,6 +41,11 @@ class Book extends Model
         return $this->hasMany('App\Models\Review');
     }
 
+    public function user()
+    {
+        return $this->belongsto('App\Models\User');
+    }
+
     /**
      * Returns rounded rating of the book from all the reviews
      * @return float

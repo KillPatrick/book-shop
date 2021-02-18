@@ -28,6 +28,14 @@
                         </p>
                     </div>
                     <div class="card-footer p-3">
+                        @for($i = 1; $i <= 10; $i++)
+                            @if($book->reviews->count() && $i <= ($book->reviews->sum('rating') / $book->reviews->count()))
+                                <span class="text-warning rating-star">&#9733;</span>
+                            @else
+                                <span class="rating-star">&#9733;</span>
+                            @endif
+                        @endfor
+                        <hr />
                     @forelse($book->authors as $author)
                         @if ($loop->first)By @endif{{$author->name}}@if(!$loop->last), @endif
                     @empty
@@ -37,11 +45,14 @@
                         @if ($loop->first)<hr />[@endif{{$genre->name}}@if(!$loop->last), @endif{{''}}@if($loop->last)]@endif
                     @empty
                     @endforelse
-
+                    <hr />
                     @can('is-admin')
+                        aaaa
                         <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
                     @else
+                        @can('is-book-owner', $book->id)
                         <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
+                        @endcan
                     @endcan
                     </div>
                 </div>
@@ -59,9 +70,14 @@
                 <h5 class="mb-2 mt-3">Write a review</h5>
                 <div class="card shadow-sm bg-white rounded-lg">
                     <div class="card-body p-2">
+                    @isset($review)
+                        <form method="POST" action="{{route('user.reviews.update', $review->id)}}">
+                            {{ method_field('PUT') }}
+                    @else
                         <form method="POST" action="{{route('user.reviews.store')}}">
+                        <input type="hidden" name="book_id" value="{{$book->id}}" />
+                    @endisset
                             @csrf
-                            <input type="hidden" name="book_id" value="{{$book->id}}" />
                         <div class="form-group">
                             <label for="rating">Rating</label>
                             <select name="rating" class="form-control" id="rating" required>

@@ -64,6 +64,11 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
-        return null !== $this->roles()->where('name', $role)->first();
+        return 1 == auth()->user()->roles->where('name', $role)->count();
+    }
+
+    public function hasBook($bookId)
+    {
+        return 1 == auth()->user()->books->where('id', $bookId)->count();
     }
 }

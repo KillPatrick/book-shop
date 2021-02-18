@@ -21,6 +21,7 @@ class BookController extends Controller
     {
         $books = Book::with('authors')
                     ->with('genres')
+                    ->withAvg('reviews', 'rating')
                     ->when(request('search'), function ($query) {
                         $search = request('search');
                         $query->where('title', 'LIKE', '%'.$search.'%')
@@ -80,6 +81,8 @@ class BookController extends Controller
         if(auth()->user()){
             $review = auth()->user()->reviews->where('book_id', $book->id)->first();
         }
+
+        $book->load('reviews')->load('user');
 
         return view('book.show', compact(['book', 'review']));
     }
