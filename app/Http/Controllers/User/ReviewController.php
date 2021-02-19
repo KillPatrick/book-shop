@@ -40,7 +40,7 @@ class ReviewController extends Controller
     {
         auth()->user()->reviews()->create($request->all());
 
-        return redirect(route('user.books.show', $request->book_id));
+        return redirect(route('user.books.show', $request->book_id))->with('success','Thank you for your review!');
     }
 
     /**
@@ -76,7 +76,7 @@ class ReviewController extends Controller
     {
         $review->update($request->all());
 
-        return redirect(route('user.books.show', $review->book_id));
+        return redirect(route('user.books.show', $review->book_id))->with('success','Review updated!');
     }
 
     /**

@@ -23,6 +23,7 @@ class CreateBooksTable extends Migration
             $table->integer('discount')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

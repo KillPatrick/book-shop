@@ -4,9 +4,6 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                @if(Session::has('success'))
-                    <div class="alert alert-success"> {{ Session::get('success') }}</div>
-                @endif
                 <div class="row">
                 @forelse ($books as $book)
                     <div class="col mb-2">

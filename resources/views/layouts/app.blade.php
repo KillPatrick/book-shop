@@ -39,13 +39,6 @@
                 @else
                     <a class="navbar-brand" href="{{route('user.books.index')}}">Book-shop</a>
                 @endcan
-
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="navbar-brand" href="{{route('user.books.create')}}">Add a book</a>
-                    </li>
-                </ul>
-
             @endguest
                 <form class="form-inline my-2 my-lg-0" method="GET"
                       @can('is-admin')
@@ -55,8 +48,29 @@
                       @endcan
                 >
                     <input class="form-control mr-sm-2" type="search" placeholder="Title, description, author, genre" name="search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-success my-2 my-sm-0 mr-3" type="submit">Search</button>
                 </form>
+                @auth
+                    @isset($notApprovedCount)
+                        @if($notApprovedCount)
+                        <a class="navbar-brand" href="{{route('admin.books.index', ['not_approved' => 1])}}">Not approved ({{$notApprovedCount}})</a>
+                        @endif
+                    @endisset
+                    @isset($userBookCount)
+                        @if($userBookCount)
+                            @can('is-admin')
+                                <a class="navbar-brand" href="{{route('admin.books.index', ['user_books' => 1])}}">My books ({{$userBookCount}})</a>
+                            @else
+                                <a class="navbar-brand" href="{{route('user.books.index', ['user_books' => 1])}}">My books ({{$userBookCount}})</a>
+                            @endcan
+                        @endif
+                    @endisset
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="navbar-brand" href="{{route('user.books.create')}}">Add a book</a>
+                        </li>
+                    </ul>
+                @endauth
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -106,8 +120,14 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
+            @if(Session::has('success'))
+            <div class="row">
+                <div class="col-md-12 pt-1">
+                    <div class="alert alert-success ml-2 mr-2"> {{ Session::get('success') }}</div>
+                </div>
+            </div>
+            @endif
             @yield('content')
         </main>
     </div>

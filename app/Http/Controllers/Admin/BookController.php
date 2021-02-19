@@ -32,8 +32,17 @@ class BookController extends Controller
                                 $query->where('name', 'LIKE', $search);
                             });
                     })
+                    ->when(request('not_approved'), function ($query) {
+                        $query->whereNull('is_approved');
+                    })
+                    ->when(request('user_books'), function ($query) {
+                        $query->where('user_id', auth()->user()->id);
+                    })
                     ->latest()
                     ->paginate(25);
+
+        //$notApprovedCount = Book::whereNull('is_approved')->count();
+
         return view('book.index', compact('books'));
     }
 
@@ -114,6 +123,7 @@ class BookController extends Controller
         $book->price = $request->input('price');
         $book->discount = $request->input('discount');
         $book->genres()->sync($request['genres']);
+        $book->is_approved = 1;
         $authors = explode(',', $request['authors']);
 
         foreach($authors as $authorName){

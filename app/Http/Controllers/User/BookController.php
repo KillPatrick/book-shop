@@ -18,21 +18,24 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('authors')
+        $books = Book::where('is_approved', '1')
+                    ->with('authors')
                     ->with('genres')
                     ->withAvg('reviews', 'rating')
                     ->when(request('search'), function ($query) {
                         $search = request('search');
-                        $query->where('title', 'LIKE', '%'.$search.'%')
-                            ->orWhere('description', 'LIKE', '%'.$search.'%')
-                            ->orWhereHas('genres', function ($query) use ($search){
-                                $query->where('name', 'LIKE', '%'.$search.'%');
+                        $query->where('title', 'LIKE', '%' . $search . '%')
+                            ->orWhere('description', 'LIKE', '%' . $search . '%')
+                            ->orWhereHas('genres', function ($query) use ($search) {
+                                $query->where('name', 'LIKE', '%' . $search . '%');
                             })->orWhereHas('authors', function ($query) use ($search) {
-                                $query->where('name', 'LIKE', '%'.$search.'%');
+                                $query->where('name', 'LIKE', '%' . $search . '%');
                             });
                     })
+                    ->when(request('user_books'), function ($query) {
+                        $query->where('user_id', auth()->user()->id);
+                    })
                     ->latest()
-                    ->whereNotNull('is_approved')
                     ->paginate(25);
         return view('book.index', compact('books'));
     }
@@ -130,7 +133,7 @@ class BookController extends Controller
 
         $book->save();
 
-        return redirect(route('admin.books.index'))->with('success', 'Book saved!');
+        return redirect(route('admin.books.index'))->with('success','Book saved, but will only be visible when approved by admin');
     }
 
     /**

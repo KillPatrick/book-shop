@@ -47,7 +47,6 @@
                     @endforelse
                     <hr />
                     @can('is-admin')
-                        aaaa
                         <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
                     @else
                         @can('is-book-owner', $book->id)

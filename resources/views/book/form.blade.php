@@ -34,7 +34,7 @@
 @isset($book)
 <div class="form-group">
     <label for="discount">Discount %</label>
-    <input class="form-control" name="discount" id="discount" rows="5" type="number" min="0" max="100" step="5" value="{{$book->discount}}"  required />
+    <input class="form-control" name="discount" id="discount" rows="5" type="number" min="0" max="100" value="{{$book->discount}}"  required />
 </div>
 @endisset
 <div class="form-group">
