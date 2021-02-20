@@ -48,9 +48,19 @@
                     <hr />
                     @can('is-admin')
                         <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
+                        <form method="POST" action="{{route('user.books.destroy', $book)}}">
+                            @csrf
+                            {{ method_field('DELETE') }}
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
+                        </form>
                     @else
                         @can('is-book-owner', $book->id)
                         <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
+                        <form method="POST" action="{{route('user.books.destroy', $book)}}">
+                            @csrf
+                            {{ method_field('DELETE') }}
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
+                        </form>
                         @endcan
                     @endcan
                     </div>

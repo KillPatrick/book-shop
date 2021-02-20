@@ -19,11 +19,6 @@ class BookController extends Controller
      */
     public function index()
     {
-        /*when(Auth::check(), function($query) {
-                        $query->orWhere('user_id', auth()->user()->id)
-                        ->where('is_approved', '');
-                    })
-                  //  where('is_approved', '1')*/
         $books = Book::whereNotNull('is_approved')
                     ->with('authors')
                     ->with('genres')
@@ -159,6 +154,8 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+
+        return redirect(route('admin.books.index'))->with('success', 'Book deleted!');
     }
 }

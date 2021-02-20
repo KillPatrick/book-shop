@@ -22,8 +22,12 @@
                                     <span class="badge badge-danger shadow-sm">Not approved</span>
                                 @endif
                             </h4>
-                            <!--h3 class="badge badge-danger sticky-top position-absolute">{{$book->price}} &euro;</h3-->
-                            <a href="@can('is-admin') {{route('admin.books.show', $book->id)}} @else{{route('user.books.show', $book->id)}} @endcan">
+                            @guest
+                                <a href="{{route('guest.books.show', $book->id)}}">
+                            @else
+                                <a href="@can('is-admin') {{route('admin.books.show', $book->id)}} @else{{route('user.books.show', $book->id)}} @endcan">
+                            @endguest
+
                             @if($book->image)
                                 <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="100%" />
                             @else

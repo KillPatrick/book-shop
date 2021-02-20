@@ -32,7 +32,7 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
             @guest
-                    <a class="navbar-brand" href="{{url('/')}}">Book-shop</a>
+                    <a class="navbar-brand" href="{{route('guest.books.index')}}">Book-shop</a>
             @else
                 @can('is-admin')
                     <a class="navbar-brand" href="{{route('admin.books.index')}}">Book-shop</a>
