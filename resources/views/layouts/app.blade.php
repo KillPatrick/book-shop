@@ -41,11 +41,11 @@
                 @endcan
             @endguest
                 <form class="form-inline my-2 my-lg-0" method="GET"
-                      @can('is-admin')
-                        action="{{route('admin.books.index')}}"
-                      @else
-                        action="{{route('user.books.index')}}"
-                      @endcan
+                @guest
+                    action="{{route('guest.books.index')}}"
+                @else
+                    action="@can('is-admin') {{route('admin.books.index')}} @else{{route('user.books.index')}} @endcan"
+                @endguest
                 >
                     <input class="form-control mr-sm-2" type="search" placeholder="Title, description, author, genre" name="search" aria-label="Search">
                     <button class="btn btn-success my-2 my-sm-0 mr-3" type="submit">Search</button>
