@@ -80,11 +80,11 @@
                         <div class="form-group">
                             <label for="rating">Rating</label>
                             <select name="rating" class="form-control" id="rating" required>
-                        @for ($i = 1; $i <= 10; $i++)
+                        @for ($i = 10; $i >= 1; $i--)
                                 <option value="{{$i}}" @isset($review) @if($review->rating == $i) selected @endif @endisset>
                                     {{$i}} -
-                                    @for ($j = 10; $j >= 1; $j--)
-                                        @if($i >= $j)
+                                    @for ($j = 1; $j <= 10; $j++)
+                                        @if($j <= $i)
                                             &#9733;
                                         @endif
                                     @endfor

@@ -8,6 +8,7 @@ use App\Models\Genre;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -18,25 +19,43 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::where('is_approved', '1')
+        /*when(Auth::check(), function($query) {
+                        $query->orWhere('user_id', auth()->user()->id)
+                        ->where('is_approved', '');
+                    })
+                  //  where('is_approved', '1')*/
+        $books = Book::whereNotNull('is_approved')
                     ->with('authors')
                     ->with('genres')
                     ->withAvg('reviews', 'rating')
+                    ->when(request('user_books') && Auth::check(), function ($query) {
+                        $query->where('user_id', auth()->user()->id)
+                            ->whereNotNull('is_approved')
+                            ->orWhere(function($query){
+                                    $query->whereNull('is_approved')
+                                        ->where('user_id', auth()->user()->id);
+                                });
+                    })
                     ->when(request('search'), function ($query) {
                         $search = request('search');
-                        $query->where('title', 'LIKE', '%' . $search . '%')
-                            ->orWhere('description', 'LIKE', '%' . $search . '%')
+                        $query->whereNotNull('is_approved')
+                            ->where('title', 'LIKE', '%' . $search . '%')
+                            ->orWhere(function($query) use ($search){
+                               $query->whereNotNull('is_approved')
+                                   ->where('description', 'LIKE', '%' . $search . '%');
+                            })
                             ->orWhereHas('genres', function ($query) use ($search) {
-                                $query->where('name', 'LIKE', '%' . $search . '%');
-                            })->orWhereHas('authors', function ($query) use ($search) {
-                                $query->where('name', 'LIKE', '%' . $search . '%');
+                                $query->whereNotNull('is_approved')
+                                        ->where('name', 'LIKE', '%' . $search . '%');
+                            })
+                            ->orWhereHas('authors', function ($query) use ($search) {
+                                $query->whereNotNull('is_approved')
+                                      ->where('name', 'LIKE', '%' . $search . '%');
                             });
-                    })
-                    ->when(request('user_books'), function ($query) {
-                        $query->where('user_id', auth()->user()->id);
                     })
                     ->latest()
                     ->paginate(25);
+
         return view('book.index', compact('books'));
     }
 
@@ -80,10 +99,6 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        if(!$book->is_approved){
-            return redirect('/');
-        }
-
         $review = null;
         if(auth()->user()){
             $review = auth()->user()->reviews->where('book_id', $book->id)->first();

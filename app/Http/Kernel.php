@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\AccessAdmin;
+use App\Http\Middleware\AccessBookOwner;
+use App\Http\Middleware\AccessNotApproved;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -56,7 +58,9 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.accessAdmin' => AccessAdmin::class,
+        'auth.accessBookOwner' => AccessBookOwner::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'accessNotApproved' => AccessNotApproved::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

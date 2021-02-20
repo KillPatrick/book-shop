@@ -17,6 +17,8 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 
 Route::get('/', [App\Http\Controllers\User\BookController::class, 'index']);
 
+
+
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
@@ -27,18 +29,28 @@ Route::group(['middleware' => 'auth'], function(){
             ->name('user-password.update');
         Route::resource('users', User\UserController::class);
         Route::resource('reviews', User\ReviewController::class);
-        Route::resource('books', User\BookController::class, ['except', ['index', 'show']]);
+        Route::group(['middleware' => 'accessNotApproved'], function(){
+            Route::resource('books', User\BookController::class, ['only' => ['show']]);
+        });
+        Route::resource('books', User\BookController::class, ['only' => ['create', 'store']]);
+        Route::group(['middleware' => 'auth.accessBookOwner'], function(){
+            //Route::resource('books', User\BookController::class);
+            Route::resource('books', User\BookController::class, ['only' => ['edit', 'update', 'delete']]);
+        });
     });
 
-    Route::group(['middleware' => 'auth.accessAdmin'], function(){
-        Route::group(['prefix' => 'admin', 'as' => 'admin.'], function(){
-            Route::resource('books', Admin\BookController::class, ['except', ['index', 'show']]);
+    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function(){
+        Route::group(['middleware' => 'auth.accessAdmin'], function(){
+            Route::resource('books', Admin\BookController::class);
         });
     });
 });
 
 Route::group(['prefix' => 'user', 'as' => 'user.'], function() {
-    Route::resource('books', User\BookController::class, ['only', ['index', 'show']]);
+    Route::resource('books', User\BookController::class, ['except' => ['show', 'edit', 'update', 'delete', 'create', 'store']]);
+});
+Route::group(['middleware' => 'accessNotApproved'], function(){
+    Route::resource('books', User\BookController::class, ['only' => ['show']]);
 });
 
 
