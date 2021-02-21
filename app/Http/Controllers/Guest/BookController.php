@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers\Guest;
 
-use App\Http\Requests\StoreBookRequest;
 use App\Models\Book;
-use App\Models\Genre;
-use App\Models\Author;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {

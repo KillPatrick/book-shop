@@ -19,11 +19,7 @@
                             <span class="badge badge-warning shadow-sm">New</span>
                         @endif
                     </h4>
-                    @if($book->image)
-                        <img class="mx-auto pt-5" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="50%" />
-                    @else
-                        <img class="pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/default_image.png')}}" title="{{$book->title}}" width="100%" />
-                    @endif
+                    <img class="mx-auto pt-5" src="{{URL::to($book->image_path)}}" title="{{$book->title}}" width="50%" />
                     <div class="card-body p-2">
                         <p class="card-text">
                             <hr />
@@ -54,13 +50,6 @@
                             <div class="btn-group mr-1">
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">Write a review</button>
                             </div>
-                            <div class="btn-group mr-1">
-                                <form method="POST" action="{{route('user.books.destroy', $book)}}">
-                                    @csrf
-                                    {{ method_field('DELETE') }}
-                                    <button type="button" class="btn btn-danger" onclick="return confirm('Are you sure you want to report this book?');">Report</button>
-                                </form>
-                            </div>
                             @can('is-admin')
                                 <div class="btn-group mr-1">
                                     <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
@@ -73,6 +62,12 @@
                                     </form>
                                 </div>
                             @else
+                                <div class="btn-group mr-1">
+                                    <form method="POST" action="{{route('user.books.report', $book)}}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to report this book?');">Report</button>
+                                    </form>
+                                </div>
                                 @can('is-book-owner', $book->id)
                                     <div class="btn-group mr-1">
                                         <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
@@ -100,8 +95,8 @@
                         </p>
                     </div>
                 </div>
-                <h5 class="mt-4 mb-2">Users reviews</h5>
             @forelse ($book->reviews as $review)
+                @if($loop->first) <h5 class="mt-4 mb-2">Users reviews</h5> @endif
                 <div class="card shadow-sm bg-white rounded-lg mb-3">
                     <div class="card-body p-0">
                         <div class="card-header">

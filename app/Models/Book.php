@@ -108,4 +108,11 @@ class Book extends Model
         return $book;
     }
 
+    /**
+     * @return string
+     */
+    public function getImagePathAttribute()
+    {
+        return  ($this->image ? 'Storage/Images/'.$this->image : 'Storage/Images/default_image.png');
+    }
 }

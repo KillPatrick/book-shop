@@ -6,9 +6,8 @@ use App\Http\Requests\StoreBookRequest;
 use App\Models\Genre;
 use App\Models\Book;
 use App\Models\Author;
-use Illuminate\Http\Request;
+use App\Services\ImageService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -71,7 +70,7 @@ class BookController extends Controller
         $book->is_approved = 1;
 
         if($request->hasFile('image')){
-            $book->image = $request->image->store('', ['disk' => 'my_files']);
+            $book->image = ImageService::storeImage($request);
         }
 
         $book->save();
@@ -134,7 +133,7 @@ class BookController extends Controller
         }
 
         if($request->hasFile('image')){
-            $book->image = $request->image->store('', ['disk' => 'my_files']);
+            $book->image = ImageService::storeImage($request);
         }
 
         $book->save();

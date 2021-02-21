@@ -6,9 +6,12 @@ use App\Http\Requests\StoreBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Author;
-use Illuminate\Http\Request;
+use App\Models\User;
+use App\Notifications\BookReportNotification;
+use App\Services\ImageService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class BookController extends Controller
 {
@@ -77,7 +80,7 @@ class BookController extends Controller
         $book = Book::createBookWithAuthorsGenres($request->all());
 
         if($request->hasFile('image')){
-            $book->image = $request->image->store('', ['disk' => 'my_files']);
+            $book->image = ImageService::storeImage($request);
         }
 
         $book->save();
@@ -138,7 +141,7 @@ class BookController extends Controller
         }
 
         if($request->hasFile('image')){
-            $book->image = $request->image->store('', ['disk' => 'my_files']);
+            $book->image = ImageService::storeImage($request);
         }
 
         $book->save();
@@ -157,5 +160,22 @@ class BookController extends Controller
         $book->delete();
 
         return redirect(route('admin.books.index'))->with('success', 'Book deleted!');
+    }
+
+    /**
+     * Sends notification after user reports book
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\Response
+     */
+    public function report(Book $book)
+    {
+        $adminEmails = User::whereHas('roles', function($query){
+            $query->where('name', 'admin');
+        })->get();
+
+        Notification::send($adminEmails, new BookReportNotification($book));
+
+        return redirect()->route('user.books.show', $book->id)->with('success', 'Book reported!');
     }
 }

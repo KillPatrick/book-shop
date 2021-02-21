@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\PasswordController;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController;
+use App\Http\Controllers\User\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::group(['middleware' => 'auth.accessBookOwner'], function(){
             Route::resource('books', User\BookController::class, ['only' => ['edit', 'update', 'destroy']]);
         });
+        Route::post('books/report/{book}', [BookController::class, 'report'])->name('books.report');
     });
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function(){

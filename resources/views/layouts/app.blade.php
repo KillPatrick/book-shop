@@ -53,15 +53,15 @@
                 @auth
                     @isset($notApprovedCount)
                         @if($notApprovedCount)
-                        <a class="navbar-brand" href="{{route('admin.books.index', ['not_approved' => 1])}}">Not approved ({{$notApprovedCount}})</a>
+                            <a class="navbar-brand" href="{{route('admin.books.index', ['not_approved' => 1])}}">Not approved <span class="badge badge-pill badge-danger">{{$notApprovedCount}}</span></a>
                         @endif
                     @endisset
                     @isset($userBookCount)
                         @if($userBookCount)
                             @can('is-admin')
-                                <a class="navbar-brand" href="{{route('admin.books.index', ['user_books' => 1])}}">My books ({{$userBookCount}})</a>
+                                <a class="navbar-brand" href="{{route('admin.books.index', ['user_books' => 1])}}">My books <span class="badge badge-pill badge-success">{{$userBookCount}}</span></a>
                             @else
-                                <a class="navbar-brand" href="{{route('user.books.index', ['user_books' => 1])}}">My books ({{$userBookCount}})</a>
+                                <a class="navbar-brand" href="{{route('user.books.index', ['user_books' => 1])}}">My books <span class="badge badge-pill badge-success">{{$userBookCount}}</span></a>
                             @endcan
                         @endif
                     @endisset

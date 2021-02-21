@@ -22,17 +22,12 @@
                                     <span class="badge badge-danger shadow-sm">Not approved</span>
                                 @endif
                             </h4>
-                            @guest
-                                <a href="{{route('guest.books.show', $book->id)}}">
-                            @else
-                                <a href="@can('is-admin') {{route('admin.books.show', $book->id)}} @else{{route('user.books.show', $book->id)}} @endcan">
-                            @endguest
-
-                            @if($book->image)
-                                <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="100%" />
-                            @else
-                                <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/default_image.png')}}" title="{{$book->title}}" width="100%" />
-                            @endif
+                        @guest
+                            <a href="{{route('guest.books.show', $book->id)}}">
+                        @else
+                            <a href="@can('is-admin') {{route('admin.books.show', $book->id)}} @else{{route('user.books.show', $book->id)}} @endcan">
+                        @endguest
+                                <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to($book->image_path)}}" title="{{$book->title}}" width="100%" />
                             </a>
                             <div class="card-body p-2">
                                 <p class="card-text">
