@@ -31,13 +31,11 @@ Route::group(['middleware' => 'auth'], function(){
             ->name('user-password.update');
         Route::resource('users', User\UserController::class);
         Route::resource('reviews', User\ReviewController::class);
-        Route::resource('books', User\BookController::class, ['only' => ['index']]);
+        Route::resource('books', User\BookController::class, ['only' => ['index', 'create', 'store']]);
         Route::group(['middleware' => 'auth.accessNotApproved'], function(){
             Route::resource('books', User\BookController::class, ['only' => ['show']]);
         });
-        Route::resource('books', User\BookController::class, ['only' => ['create', 'store']]);
         Route::group(['middleware' => 'auth.accessBookOwner'], function(){
-            //Route::resource('books', User\BookController::class);
             Route::resource('books', User\BookController::class, ['only' => ['edit', 'update', 'destroy']]);
         });
     });

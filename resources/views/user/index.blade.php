@@ -7,7 +7,6 @@
                 Personal information
             </div>
             <div class="col-md-10">
-
                 <div class="card">
                     <div class="card-body">
                         <form method="POST" action="{{ route('user-profile-information.update') }}">

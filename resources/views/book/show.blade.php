@@ -3,7 +3,10 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-4">
+            @if(!$book->is_approved)
+                <div class="alert alert-info col-md-12">This book is not approved and not visible to other users, admin must edit and save this book.</div>
+            @endif
+            <div class="col-md-6">
                 <div class="card shadow-sm bg-white rounded-lg">
                     <h4 class="sticky-top position-absolute ml-2 mt-1">
                         @if($book->discount)
@@ -17,11 +20,11 @@
                         @endif
                     </h4>
                     @if($book->image)
-                        <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="100%" />
+                        <img class="mx-auto pt-5" src="{{URL::to('Storage/Images/'.$book->image)}}" title="{{$book->title}}" width="50%" />
                     @else
-                        <img class="card-img-top pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/default_image.png')}}" title="{{$book->title}}" width="100%" />
+                        <img class="pl-4 pr-4 pt-4" src="{{URL::to('Storage/Images/default_image.png')}}" title="{{$book->title}}" width="100%" />
                     @endif
-                    <div class="card-body p-2 ">
+                    <div class="card-body p-2">
                         <p class="card-text">
                             <hr />
                             <b>{{$book->title}}</b>
@@ -46,23 +49,45 @@
                     @empty
                     @endforelse
                     <hr />
-                    @can('is-admin')
-                        <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
-                        <form method="POST" action="{{route('user.books.destroy', $book)}}">
-                            @csrf
-                            {{ method_field('DELETE') }}
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
-                        </form>
-                    @else
-                        @can('is-book-owner', $book->id)
-                        <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
-                        <form method="POST" action="{{route('user.books.destroy', $book)}}">
-                            @csrf
-                            {{ method_field('DELETE') }}
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
-                        </form>
-                        @endcan
-                    @endcan
+                    @auth
+                        <div class="btn-toolbar">
+                            <div class="btn-group mr-1">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">Write a review</button>
+                            </div>
+                            <div class="btn-group mr-1">
+                                <form method="POST" action="{{route('user.books.destroy', $book)}}">
+                                    @csrf
+                                    {{ method_field('DELETE') }}
+                                    <button type="button" class="btn btn-danger" onclick="return confirm('Are you sure you want to report this book?');">Report</button>
+                                </form>
+                            </div>
+                            @can('is-admin')
+                                <div class="btn-group mr-1">
+                                    <a class="btn btn-primary"href="{{route('admin.books.edit', $book)}}">Edit</a>
+                                </div>
+                                <div class="btn-group mr-1">
+                                    <form method="POST" action="{{route('admin.books.destroy', $book)}}">
+                                        @csrf
+                                        {{ method_field('DELETE') }}
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
+                                    </form>
+                                </div>
+                            @else
+                                @can('is-book-owner', $book->id)
+                                    <div class="btn-group mr-1">
+                                        <a class="btn btn-primary"href="{{route('user.books.edit', $book)}}">Edit</a>
+                                    </div>
+                                    <div class="btn-group mr-1">
+                                        <form method="POST" action="{{route('user.books.destroy', $book)}}">
+                                            @csrf
+                                            {{ method_field('DELETE') }}
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
+                                        </form>
+                                    </div>
+                                @endcan
+                            @endcan
+                        </div>
+                    @endauth
                     </div>
                 </div>
             </div>
@@ -75,46 +100,6 @@
                         </p>
                     </div>
                 </div>
-                @auth
-                <h5 class="mb-2 mt-3">Write a review</h5>
-                <div class="card shadow-sm bg-white rounded-lg">
-                    <div class="card-body p-2">
-                    @isset($review)
-                        <form method="POST" action="{{route('user.reviews.update', $review->id)}}">
-                            {{ method_field('PUT') }}
-                    @else
-                        <form method="POST" action="{{route('user.reviews.store')}}">
-                        <input type="hidden" name="book_id" value="{{$book->id}}" />
-                    @endisset
-                            @csrf
-                        <div class="form-group">
-                            <label for="rating">Rating</label>
-                            <select name="rating" class="form-control" id="rating" required>
-                        @for ($i = 10; $i >= 1; $i--)
-                                <option value="{{$i}}" @isset($review) @if($review->rating == $i) selected @endif @endisset>
-                                    {{$i}} -
-                                    @for ($j = 1; $j <= 10; $j++)
-                                        @if($j <= $i)
-                                            &#9733;
-                                        @endif
-                                    @endfor
-                                </option>
-                        @endfor
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" name="title" class="form-control" id="title" value="@isset($review){{$review->title}}@else{{ old('title') }}@endisset" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="review">Review</label>
-                            <textarea class="form-control" name="review" id="review" rows="5" required>@isset($review){{$review->review}}@else{{ old('description') }}@endisset</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                </div>
-                @endauth
                 <h5 class="mt-4 mb-2">Users reviews</h5>
             @forelse ($book->reviews as $review)
                 <div class="card shadow-sm bg-white rounded-lg mb-3">
@@ -138,15 +123,60 @@
                     </div>
                 </div>
             @empty
-                <!--div class="card shadow-sm bg-white rounded-lg">
-                    <div class="card-body p-0">
-                        <p class="card-text p-2">
-                            This book has no reviews :(
-                        </p>
-                    </div>
-                </div-->
             @endforelse
             </div>
         </div>
     </div>
+    @auth
+        <div class="modal" id="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Write a review</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @isset($review)
+                    <form method="POST" action="{{route('user.reviews.update', $review->id)}}">
+                    {{ method_field('PUT') }}
+                @else
+                    <form method="POST" action="{{route('user.reviews.store')}}">
+                    <input type="hidden" name="book_id" value="{{$book->id}}" />
+                @endisset
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="rating">Rating</label>
+                            <select name="rating" class="form-control" id="rating" required>
+                                @for ($i = 10; $i >= 1; $i--)
+                                    <option value="{{$i}}" @isset($review) @if($review->rating == $i) selected @endif @endisset>
+                                        {{$i}} -
+                                        @for ($j = 1; $j <= 10; $j++)
+                                            @if($j <= $i)
+                                                &#9733;
+                                            @endif
+                                        @endfor
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" class="form-control" id="title" value="@isset($review){{$review->title}}@else{{ old('title') }}@endisset" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="review">Review</label>
+                            <textarea class="form-control" name="review" id="review" rows="5" required>@isset($review){{$review->review}}@else{{ old('description') }}@endisset</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endauth
 @endsection
