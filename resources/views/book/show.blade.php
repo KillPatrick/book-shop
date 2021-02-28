@@ -95,30 +95,36 @@
                         </p>
                     </div>
                 </div>
-            @forelse ($book->reviews as $review)
-                @if($loop->first) <h5 class="mt-4 mb-2">Users reviews</h5> @endif
-                <div class="card shadow-sm bg-white rounded-lg mb-3">
-                    <div class="card-body p-0">
-                        <div class="card-header">
-                            <h5>{{$review->title}}</h5>
-                            <hr />
-                            <p>
-                                @for($i = 1; $i <= 10; $i++)
-                                    @if($i <= $review->rating)
-                                        <span class="text-warning rating-star">&#9733;</span>
-                                    @else
-                                        <span class="rating-star">&#9733;</span>
-                                    @endif
-                                @endfor
+            @auth
+                <div id="app">
+                    <reviews-index></reviews-index>
+                </div>
+            @else
+                @forelse ($book->reviews as $review)
+                    @if($loop->first) <h5 class="mt-4 mb-2">Users reviews</h5> @endif
+                    <div class="card shadow-sm bg-white rounded-lg mb-3">
+                        <div class="card-body p-0">
+                            <div class="card-header">
+                                <h5>{{$review->title}}</h5>
+                                <hr />
+                                <p>
+                                    @for($i = 1; $i <= 10; $i++)
+                                        @if($i <= $review->rating)
+                                            <span class="text-warning rating-star">&#9733;</span>
+                                        @else
+                                            <span class="rating-star">&#9733;</span>
+                                        @endif
+                                    @endfor
+                                </p>
+                            </div>
+                            <p class="card-text p-2">
+                                {{$review->review}}
                             </p>
                         </div>
-                        <p class="card-text p-2">
-                            {{$review->review}}
-                        </p>
                     </div>
-                </div>
-            @empty
-            @endforelse
+                @empty
+                @endforelse
+            @endauth
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
@@ -18,10 +18,12 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
-    public function show(Request $request)
+    public function show(Book $book)
     {
-        $book = Book::findOrFail($request->id);
+        if($book->is_approved){
+            return new BookResource($book);
+        }
 
-        return new BookResource($book);
+        abort(404);
     }
 }
