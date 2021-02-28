@@ -15,4 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('books', BookController::class)->only(['index', 'show']);
+Route::apiResource('reviews', ReviewController::class);
+
+
 

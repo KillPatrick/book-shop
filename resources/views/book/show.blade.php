@@ -97,7 +97,7 @@
                 </div>
             @auth
                 <div id="app">
-                    <reviews-index></reviews-index>
+                    <reviews-index book_id="{{$book->id}}"></reviews-index>
                 </div>
             @else
                 @forelse ($book->reviews as $review)
