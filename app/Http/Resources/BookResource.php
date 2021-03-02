@@ -23,6 +23,8 @@ class BookResource extends JsonResource
             'discount' => $this->discount,
             'genres' => $this->genres->pluck('name')->implode(', '),
             'authors' => $this->authors->pluck('name')->implode(', '),
+            'rating' => $this->reviewsRating(),
+            'new' => $this->new()
         ];
     }
 }

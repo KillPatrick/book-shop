@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-Vue.component('reviews-index', require('./components/Reviews/Index.vue').default)
+Vue.component('index-index', require('./components/Books/Index.vue').default)
 
 const app = new Vue({
     el : '#app'
