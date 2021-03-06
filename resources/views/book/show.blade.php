@@ -1,11 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    @auth
-        <div id="app">
-            <index-index book_id="{{$book->id}}"></index-index>
-        </div>
-    @else
         <div class="container">
             <div class="row justify-content-center">
                 @if(!$book->is_approved)
@@ -179,5 +174,4 @@
                 </div>
             </div>
         @endauth
-    @endauth
 @endsection
